@@ -23,7 +23,7 @@ resource "aws_route_table" "private_routing_table" {
   # route 없는거 테스트
 
   tags = {
-    Name = "${var.vpc_name}-public-routing-table"
+    Name = "${var.vpc_name}-private-routing-table"
   }
 }
 

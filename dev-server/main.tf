@@ -26,10 +26,11 @@ module "routing_table" {
     igw_id = module.vpc.igw_id
     vpc_name = var.vpc_name
     subnet_id = module.public_subnet.subnet_id
+    
 }
 
 module "dev_ec2_sg" {
-    source "../modules/security_group"
+    source = "../modules/security_group"
 
     vpc_name = var.vpc_name
     vpc_id = module.vpc.vpc_id
@@ -44,8 +45,8 @@ module "dev_ec2" {
 
     images = data.aws_ami.ubuntu.id
     instance_type = var.instance_type
-    key_name = data.fooiy-dev-key
-    security_group_ids = module.dev_ec2_sh.id
+    key_name = data.aws_key_pair.fooiy-dev-key.key_name
+    security_group_ids = module.dev_ec2_sg.sg_id
     subnet_id = module.public_subnet.subnet_id
     vpc_name = var.vpc_name
     ec2_usage = var.ec2_usage

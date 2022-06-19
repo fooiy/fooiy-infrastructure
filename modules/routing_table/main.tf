@@ -7,7 +7,7 @@ resource "aws_route_table" "public_routing_table" {
   }
 
   tags = {
-    Name = "${vpc_name}-public-routing-table"
+    Name = "${var.vpc_name}-public-routing-table"
   }
 }
 
@@ -23,11 +23,11 @@ resource "aws_route_table" "private_routing_table" {
   # route 없는거 테스트
 
   tags = {
-    Name = "${vpc_name}-public-routing-table"
+    Name = "${var.vpc_name}-public-routing-table"
   }
 }
 
-resource "aws_route_table_association" "private_routing_table" {
-  subnet_id      = var.subnet_id
-  route_table_id = aws_route_table.private_routing_table.id
-}
+# resource "aws_route_table_association" "private_routing_table" {
+#   subnet_id      = var.subnet_id
+#   route_table_id = aws_route_table.private_routing_table.id
+# }

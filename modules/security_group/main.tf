@@ -1,5 +1,5 @@
 resource "aws_security_group" "security_group" {
-  name        = "${var.vpc_name}-${var.subnet_name}-sg"
+  name        = "${var.vpc_name}-sg"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -7,7 +7,7 @@ resource "aws_security_group" "security_group" {
     from_port        = var.from_port
     to_port          = var.to_port
     protocol         = var.protocol
-    cidr_blocks      = [var.cidr_block]
+    cidr_blocks      = [var.sg_cidr_block]
   }
 
   egress {
@@ -18,6 +18,6 @@ resource "aws_security_group" "security_group" {
   }
 
   tags = {
-    Name = "${var.vpc_name}-${var.subnet_name}-sg"
+    Name = "${var.vpc_name}-sg"
   }
 }

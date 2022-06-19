@@ -28,3 +28,25 @@ module "routing_table" {
     subnet_id = module.public_subnet.subnet_id
 }
 
+module "dev_ec2_sg" {
+    source "../modules/security_group"
+
+    vpc_name = var.vpc_name
+    vpc_id = module.vpc.vpc_id
+    from_port = var.from_port
+    to_port = var.to_port
+    protocol = var.protocol
+    sg_cidr_block = var.sg_cidr_block
+}
+
+module "dev_ec2" {
+    source = "../modules/ec2"
+
+    images = data.aws_ami.ubuntu.id
+    instance_type = var.instance_type
+    key_name = data.fooiy-dev-key
+    security_group_ids = module.dev_ec2_sh.id
+    subnet_id = module.public_subnet.subnet_id
+    vpc_name = var.vpc_name
+    ec2_usage = var.ec2_usage
+}

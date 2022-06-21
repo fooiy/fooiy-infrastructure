@@ -1,17 +1,21 @@
 variable vpc_name {
-    default = "fooiy-dev"
+    default = "fooiy"
 }
 
 variable vpc_cidr {
     default = "10.0.0.0/16"
 }
 
+
+
+
+
 variable public_subnet_cidr {
     default = ["10.0.1.0/24"]
 }
 
 variable subnet_az {
-    default = "ap-northeast-2a"
+    default = ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c"]
 }
 
 variable ec2_from_port {

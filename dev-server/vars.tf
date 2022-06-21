@@ -65,3 +65,31 @@ data "aws_ami" "ubuntu" {
 data "aws_key_pair" "fooiy-dev-key" {
   key_name = "fooiy-dev"
 }
+
+variable rds_allocated_storage   {
+    default = 10 
+}
+variable rds_engine              {
+    default = "mysql" 
+}
+variable rds_engine_version      {
+    default = "5.7" 
+}
+variable rds_instance_class      {
+    default = "db.t2.micro" 
+}
+variable rds_name                {
+    default = "fooiy-dev" 
+}
+variable rds_username            {
+    default = "admin" 
+}
+variable rds_password            {
+    default = "foobarbaz" 
+}
+variable rds_parameter_group_name{
+    default = "default.mysql5.7" 
+}
+variable rds_skip_final_snapshot {
+    default = true 
+}

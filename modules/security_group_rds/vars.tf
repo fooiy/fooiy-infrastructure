@@ -3,4 +3,5 @@ variable vpc_id {}
 variable from_port {}
 variable to_port {}
 variable protocol {}
-variable sg_cidr_block {}
+variable security_group_id {}
+

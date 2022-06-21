@@ -8,6 +8,6 @@ resource "aws_db_instance" "rds" {
   password             = var.rds_password
   parameter_group_name = var.rds_parameter_group_name
   skip_final_snapshot  = var.rds_skip_final_snapshot
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_security_group_ids = var.rds_vpc_security_group_ids
   replica_mode = "open-read-only"
 }

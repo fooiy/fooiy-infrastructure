@@ -1,4 +1,4 @@
-resource "aws_security_group" "security_group" {
+resource "aws_security_group" "security_group_rds" {
   name        = "${var.vpc_name}-sg"
   vpc_id      = var.vpc_id
 
@@ -7,7 +7,7 @@ resource "aws_security_group" "security_group" {
     from_port        = var.from_port
     to_port          = var.to_port
     protocol         = var.protocol
-    cidr_blocks      = [var.sg_cidr_block]
+    security_group_id = var.security_group_id
   }
 
   egress {
@@ -18,6 +18,6 @@ resource "aws_security_group" "security_group" {
   }
 
   tags = {
-    Name = "${var.vpc_name}-sg"
+    Name = "${var.vpc_name}-rds-sg"
   }
 }

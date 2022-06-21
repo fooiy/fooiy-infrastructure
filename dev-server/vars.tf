@@ -14,16 +14,16 @@ variable subnet_az {
     default = "ap-northeast-2a"
 }
 
-variable from_port {
+variable ec2_from_port {
     default = 80
 }
-variable to_port {
+variable ec2_to_port {
     default = 80
 }
-variable protocol {
+variable ec2_protocol {
     default = "tcp"
 }
-variable sg_cidr_block {
+variable ec2_sg_cidr_block {
     default = "0.0.0.0/0"
 }
 
@@ -33,6 +33,17 @@ variable instance_type {
 variable ec2_usage {
     default = "dev-api"
 }
+
+variable rds_from_port {
+    default = 22
+}
+variable rds_to_port {
+    default = 22
+}
+variable rds_protocol {
+    default = "ssh"
+}
+
 
 # 우분투 이미지
 data "aws_ami" "ubuntu" {

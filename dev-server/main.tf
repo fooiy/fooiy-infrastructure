@@ -34,10 +34,21 @@ module "dev_ec2_sg" {
 
     vpc_name = var.vpc_name
     vpc_id = module.vpc.vpc_id
-    from_port = var.from_port
-    to_port = var.to_port
-    protocol = var.protocol
-    sg_cidr_block = var.sg_cidr_block
+    from_port = var.ec2_from_port
+    to_port = var.ec2_to_port
+    protocol = var.ec2_protocol
+    sg_cidr_block = var.ec2_sg_cidr_block
+}
+
+module "dev_rds_sg" {
+    source = "../modules/security_group_rds"
+
+    vpc_name = var.vpc_name
+    vpc_id = module.vpc.vpc_id
+    from_port = var.rds_from_port
+    to_port = var.rds_to_port
+    protocol = var.rds_protocol
+    security_group_id = module.dev_ec2_sg.sg_id 
 }
 
 module "dev_ec2" {
@@ -50,4 +61,19 @@ module "dev_ec2" {
     subnet_id = module.public_subnet.subnet_id
     vpc_name = var.vpc_name
     ec2_usage = var.ec2_usage
+}
+
+module "rds" {
+    source = "../modules/rds_master"
+
+    rds_allocated_storage = var.rds_allocated_storage 
+    rds_engine = var.rds_engine 
+    rds_engine_version = var.rds_engine_version 
+    rds_instance_class = var.rds_instance_class 
+    rds_name = var.rds_name 
+    rds_username = var.rds_username 
+    rds_password = var.rds_password 
+    rds_parameter_group_name = var.rds_parameter_group_name 
+    rds_skip_final_snapshot = var.rds_skip_final_snapshot 
+    rds_vpc_security_group_ids = [module.dev_rds_sg.sg_id]
 }

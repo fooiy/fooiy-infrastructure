@@ -8,3 +8,4 @@ variable rds_password {}
 variable rds_parameter_group_name {}
 variable rds_skip_final_snapshot {}
 variable rds_vpc_security_group_ids {}
+variable db_subnet_group_name {}

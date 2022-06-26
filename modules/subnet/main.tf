@@ -13,7 +13,7 @@ resource "aws_subnet" "subnet" {
 
 # 퍼블릭 라우팅테이블 리소스
 resource "aws_route_table" "public_routing_table" {
-  count = var.is_public
+  count = var.change_value_to_int[var.is_public]
   vpc_id = var.vpc_id
 
   route {
@@ -26,23 +26,26 @@ resource "aws_route_table" "public_routing_table" {
   }
 }
 resource "aws_route_table_association" "public_routing_table" {
+  count = var.change_value_to_int[var.is_public]
   subnet_id      = aws_subnet.subnet.id
-  route_table_id = aws_route_table.public_routing_table.id
+  route_table_id = aws_route_table.public_routing_table[0].id
 }
 
 
 # 프라이빗 라우팅테이블 리소스
 resource "aws_route_table" "private_routing_table" {
-  count = 1 - var.is_public
+  count = 1 - var.change_value_to_int[var.is_public]
   vpc_id = var.vpc_id
 
   # 로컬 되는지 확인할 것
 
   tags = {
-    Name = "${var.vpc_name}-private_routing-table"
+    Name = "${var.vpc_name}-${var.subnet_usage}-private_routing-table"
   }
 }
 resource "aws_route_table_association" "private_routing_table" {
+  count = 1 - var.change_value_to_int[var.is_public]
   subnet_id      = aws_subnet.subnet.id
-  route_table_id = aws_route_table.private_routing_table.id
+  route_table_id = aws_route_table.private_routing_table[0].id
+  
 }

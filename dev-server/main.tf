@@ -17,7 +17,8 @@ module "public_subnet" {
     subnet_az = var.subnet_az[0]
     is_public = true
     vpc_name = var.vpc_name
-    igw_id = = module.vpc.igw_id
+    igw_id = module.vpc.igw_id
+    subnet_usage = ""
 }
 
 module "private_db_subnet" {
@@ -26,63 +27,46 @@ module "private_db_subnet" {
     vpc_id = module.vpc.vpc_id
     subnet_cidr = var.private_subnet_cidr[0]
     subnet_az = var.subnet_az[1]
-    is_public = true
+    is_public = false
     vpc_name = var.vpc_name
+    igw_id = module.vpc.igw_id
+    subnet_usage = "db"
 }
 
 module "private_api_subnet" {
     source = "../modules/subnet"
 
     vpc_id = module.vpc.vpc_id
-    subnet_cidr = var.private_subnet_cidr[0]
+    subnet_cidr = var.private_subnet_cidr[1]
     subnet_az = var.subnet_az[2]
-    is_public = true
+    is_public = false
     vpc_name = var.vpc_name
+    igw_id = module.vpc.igw_id
+    subnet_usage = "api"
 }
 
-module "dev_ec2_sg" {
-    source = "../modules/security_group"
+module "web_ec2" {
+    source = "../modules/ec2"
 
+    images = data.aws_ami.ubuntu.id
+    instance_type = var.instance_type
+    key_name = data.aws_key_pair.fooiy-web-key.key_name
+    security_group_ids = aws_security_group.web_sg.id
+    subnet_id = module.public_subnet.subnet_id
     vpc_name = var.vpc_name
-    vpc_id = module.vpc.vpc_id
-    from_port = var.ec2_from_port
-    to_port = var.ec2_to_port
-    protocol = var.ec2_protocol
-    sg_cidr_block = var.ec2_sg_cidr_block
+    ec2_usage = "web"
 }
 
-module "dev_db_sg" {
-    source = "../modules/security_group"
-
-    vpc_name = var.vpc_name
-    vpc_id = module.vpc.vpc_id
-    from_port = var.rds_from_port
-    to_port = var.rds_to_port
-    protocol = var.rds_protocol
-    security_group_id = module.dev_ec2_sg.sg_id 
-}
-
-module "dev_api_sg" {
-    source = "../modules/security_group"
-
-    vpc_name = var.vpc_name
-    vpc_id = module.vpc.vpc_id
-    from_port = var.rds_from_port
-    to_port = var.rds_to_port
-    protocol = var.rds_protocol
-    security_group_id = module.dev_ec2_sg.sg_id 
-}
-
-module "dev_ec2" {
+module "dev_api_ec2" {
     source = "../modules/ec2"
 
     images = data.aws_ami.ubuntu.id
     instance_type = var.instance_type
     key_name = data.aws_key_pair.fooiy-dev-key.key_name
-    security_group_ids = module.dev_ec2_sg.sg_id
+    security_group_ids = aws_security_group.dev_api_sg.id
     subnet_id = module.public_subnet.subnet_id
     vpc_name = var.vpc_name
-    ec2_usage = var.ec2_usage
+    ec2_usage = "dev-api"
 }
 
 resource "aws_db_subnet_group" "private_subnet_group" {
@@ -94,7 +78,7 @@ resource "aws_db_subnet_group" "private_subnet_group" {
   }
 }
 
-module "rds" {
+module "dev_rds"{
     source = "../modules/rds_master"
 
     db_subnet_group_name = aws_db_subnet_group.private_subnet_group.name
@@ -107,5 +91,12 @@ module "rds" {
     rds_password = var.rds_password 
     rds_parameter_group_name = var.rds_parameter_group_name 
     rds_skip_final_snapshot = var.rds_skip_final_snapshot 
-    rds_vpc_security_group_ids = [module.dev_rds_sg.sg_id]
+    rds_vpc_security_group_ids = [aws_security_group.dev_api_sg.id]
+}
+
+module "dev_s3"{
+    source = "../modules/s3"
+    
+    bucket_name = "fooiy-dev"
+    usage = "dev"
 }

@@ -12,7 +12,7 @@
   - key-pari : {환경}_{도메인}_{리소스명}
   - s3 : {환경}_{fooiy}
   - ECR : {환경}_{repo명}
-  - route53 : ?
+  - route53 : route53
 - VPC 내부
   - vpc : {환경}_{리소스명}_{CIDR}
   - subnet : {환경}_{리소스명}_{public/private}_{AZ}

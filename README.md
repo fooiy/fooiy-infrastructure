@@ -21,7 +21,7 @@
   - nat : {환경}_{엮인 리소스명}_{리소스명}
   - route table : (aws_route_table, aws_route_table_association)한군데서 관리
                   {환경}_{엮인 리소스명}_{리소스명}
-  - security_group : {환경}_{엮인 리소스명}_{리소스명}
+  - security_group : {환경}_{도메인}_{엮인 리소스명}_{리소스명}
   - ec2 : {환경}_{도메인}_{리소스명}
   - rds : {환경}_{도메인}_{리소스명}
   - ecs : ?

@@ -75,8 +75,7 @@ module "rds" {
   db_subnet_group_name = module.subnet.private_subnet_group_name
   allowed_security_groups = [module.security_group.dev_api_ec2_security_group_id]
 
-  ####### 실제 테스트 완료 시 추가!!
-  # deletion_protection = true
+  deletion_protection = true
 }
 
 module "s3"{

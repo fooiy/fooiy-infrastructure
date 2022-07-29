@@ -25,7 +25,34 @@ resource "aws_lb_target_group_attachment" "prod_web_target_group_attachment" {
   port             = 80
 }
 
-resource "aws_lb_listener" "prod_web_load_balancer_listener" {
+resource "aws_lb_listener" "prod_web_load_balancer_listener_http" {
+  depends_on = [aws_acm_certificate.fooiy_certification]
+  load_balancer_arn = aws_lb.prod_web_load_balancer.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.prod_web_target_group.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "forward_https" {
+  listener_arn = aws_lb_listener.prod_web_load_balancer_listener_https.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.prod_web_target_group.arn
+  }
+
+  condition {
+    host_header {
+      values = ["www.fooiy.com"]
+    }
+  }
+}
+
+resource "aws_lb_listener" "prod_web_load_balancer_listener_https" {
   depends_on = [aws_acm_certificate.fooiy_certification]
   load_balancer_arn = aws_lb.prod_web_load_balancer.arn
   port              = "443"
@@ -39,39 +66,23 @@ resource "aws_lb_listener" "prod_web_load_balancer_listener" {
   }
 }
 
-resource "aws_acm_certificate" "fooiy_certification" {
-  domain_name       = "*.fooiy.com"
-  validation_method = "DNS"
+resource "aws_lb_listener_rule" "redirect_http_to_https" {
+  listener_arn = aws_lb_listener.prod_web_load_balancer_listener_http.arn
 
-  tags = {
-    Environment = "prod"
-  }
+  action {
+    type = "redirect"
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_route53_record" "fooiy_certification_validation_route53" {
-  for_each = {
-    for dvo in aws_acm_certificate.fooiy_certification.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
     }
   }
 
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.route53.zone_id
-}
-
-
-resource "aws_acm_certificate_validation" "fooiy_certification_validation" {
-  certificate_arn         = aws_acm_certificate.fooiy_certification.arn
-  validation_record_fqdns = [for record in aws_route53_record.fooiy_certification_validation_route53 : record.fqdn]
+  condition {
+    host_header {
+      values = ["www.fooiy.com"]
+    }
+  }
 }
 

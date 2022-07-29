@@ -85,6 +85,8 @@ module "route53"{
   source = "./modules/route53"
   dev_api_ec2_ip = [module.ec2.dev_api_ec2_ip]
   prod_admin_ec2_ip = [module.ec2.prod_admin_ec2_ip]
+  prod_web_load_balancer_dns_name = module.application_load_balancer.prod_web_load_balancer_dns_name
+  prod_web_load_balancer_zone_id = module.application_load_balancer.prod_web_load_balancer_zone_id
 }
 
 module "application_load_balancer"{

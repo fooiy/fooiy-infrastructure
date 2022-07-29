@@ -17,3 +17,15 @@ data "aws_ami" "ubuntu" {
 data "aws_key_pair" "dev_api_key_pair" {
   key_name           = "dev-api-key-pair"
 }
+
+data "aws_key_pair" "prod_web_key_pair" {
+  key_name           = "prod-web-key-pair"
+}
+
+data "aws_key_pair" "prod_admin_key_pair" {
+  key_name           = "prod-admin-key-pair"
+}
+
+data "aws_key_pair" "vpn_key_pair" {
+  key_name           = "vpn-key-pair"
+}

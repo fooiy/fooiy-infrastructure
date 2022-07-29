@@ -8,8 +8,8 @@ variable "subnets" {
   type        = list(string)
 }
 
-variable "allowed_security_groups" {
-  description = "rds allowed_security_groups"
+variable "vpc_security_group_ids" {
+  description = "rds vpc_security_group_ids"
   type        = list(string)
 }
 

@@ -1,7 +1,4 @@
 # Configure the AWS Provider
-provider "aws" {
-  region = "ap-northeast-2"
-}
 variable "availability_zones" {
   description = "availability zones"
   type = object({
@@ -63,9 +60,13 @@ module "security_group" {
 # ========== EC2 ========== #
 module "ec2" {
   source                 = "./modules/ec2"
-  vpc_security_group_ids     = [module.security_group.dev_api_ec2_security_group_id]
+  vpc_dev_api_security_group_ids = [module.security_group.dev_api_ec2_security_group_id]
+  vpc_prod_web_security_group_ids = [module.security_group.prod_web_ec2_security_group_id]
+  vpc_prod_admin_security_group_ids = [module.security_group.prod_admin_ec2_security_group_id]
+  vpc_vpn_security_group_ids = [module.security_group.vpn_ec2_security_group_id]
   availability_zones     = var.availability_zones
-  subnet_id              = module.subnet.subnet_public_a_id
+  subnet_a_id            = module.subnet.subnet_public_a_id
+  subnet_c_id            = module.subnet.subnet_public_c_id
 }
 
 module "rds" {
@@ -73,16 +74,24 @@ module "rds" {
   vpc_id  = module.vpc.id
   subnets = [module.subnet.subnet_private_a_id, module.subnet.subnet_private_c_id]
   db_subnet_group_name = module.subnet.private_subnet_group_name
-  allowed_security_groups = [module.security_group.dev_api_ec2_security_group_id]
-
-  deletion_protection = true
+  vpc_security_group_ids = [module.security_group.dev_api_ec2_security_group_id, module.security_group.vpn_ec2_security_group_id]
 }
 
 module "s3"{
-    source = "./modules/s3"
+  source = "./modules/s3"
 }
 
 module "route53"{
-    source = "./modules/route53"
-    dev_api_ec2_ip = [module.ec2.dev_api_ec2_ip]
+  source = "./modules/route53"
+  dev_api_ec2_ip = [module.ec2.dev_api_ec2_ip]
+  prod_admin_ec2_ip = [module.ec2.prod_admin_ec2_ip]
+}
+
+module "application_load_balancer"{
+  source = "./modules/application_load_balancer"
+
+  vpc_id = module.vpc.id
+  subnets = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
+  security_groups = [module.security_group.prod_web_ec2_security_group_id]
+  prod_web_instance_id = module.ec2.prod_web_ec2_id
 }

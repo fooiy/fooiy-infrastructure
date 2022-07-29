@@ -9,8 +9,10 @@ resource "aws_db_instance" "dev_rds" {
   password             = "mh76y4rL52UryqdE3kBa"
   parameter_group_name = "default.mysql8.0"
   skip_final_snapshot  = true
-  vpc_security_group_ids = var.allowed_security_groups
+  vpc_security_group_ids = var.vpc_security_group_ids
   db_subnet_group_name = var.db_subnet_group_name
+
+  deletion_protection = true
 }
 
 

@@ -1,4 +1,4 @@
-# 인증서 등록 및 라우터53 연결
+#인증서 등록 및 라우터53 연결
 resource "aws_acm_certificate" "fooiy_certification" {
   domain_name       = "*.fooiy.com"
   validation_method = "DNS"

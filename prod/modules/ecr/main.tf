@@ -1,4 +1,9 @@
-resource "aws_ecr_repository" "dev-api_fooiy_com" {
-  name                 = "dev-api.fooiy.com"
-  image_tag_mutability = "MUTABLE"
+module "dev-api_fooiy_com" {
+  source = "./modules"
+  ecr_repository_name = "dev-api.fooiy.com"
+}
+
+module "api_fooiy_com" {
+  source = "./modules"
+  ecr_repository_name = "api.fooiy.com"
 }

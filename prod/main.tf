@@ -27,11 +27,6 @@ module "subnet" {
   availability_zones = var.availability_zones
 }
 
-# ========== Elastic IP ========== #
-# module "elastic_ip" {
-#   source = "./modules/elastic_ip"
-# }
-
 # ========== Internet Gateway ========== #
 module "internet_gateway" {
   source = "./modules/internet_gateway"
@@ -43,8 +38,6 @@ module "route_table" {
   source              = "./modules/route_table"
   vpc_id              = module.vpc.id
   internet_gateway_id = module.internet_gateway.internet_gateway_id
-  # nat_gateway_2a_id   = module.nat_gateway.nat_gateway_2a_id
-  # nat_gateway_2c_id   = module.nat_gateway.nat_gateway_2c_id
   subnet_public_a_id  = module.subnet.subnet_public_a_id
   subnet_public_c_id  = module.subnet.subnet_public_c_id
   subnet_private_a_id = module.subnet.subnet_private_a_id
@@ -75,7 +68,12 @@ module "rds" {
   vpc_id                 = module.vpc.id
   subnets                = [module.subnet.subnet_private_a_id, module.subnet.subnet_private_c_id]
   db_subnet_group_name   = module.subnet.private_subnet_group_name
+  # dev-rds security group
   vpc_security_group_ids = [module.security_group.dev_api_ec2_security_group_id, module.security_group.vpn_ec2_security_group_id]
+  # prod-rds security group
+  allowed_security_groups = [module.security_group.prod_api_ecs_task_security_group_id, module.security_group.prod_admin_ec2_security_group_id]
+
+  depends_on             = [module.security_group]
 }
 
 # ========== S3 ========== #
@@ -83,25 +81,36 @@ module "s3" {
   source = "./modules/s3"
 }
 
-# ========== Route53 ========== #
-module "route53" {
-  source                          = "./modules/route53"
-  dev_api_ec2_ip                  = [module.ec2.dev_api_ec2_ip]
-  prod_admin_ec2_ip               = [module.ec2.prod_admin_ec2_ip]
-  prod_web_load_balancer_dns_name = module.application_load_balancer.prod_web_load_balancer_dns_name
-  prod_web_load_balancer_zone_id  = module.application_load_balancer.prod_web_load_balancer_zone_id
+# ========== Certificate Manager ========== #
+module "certificate_manager" {
+  source = "./modules/certificate_manager"
 }
 
 # ========== Load Balancers ========== #
-module "application_load_balancer" {
-  source = "./modules/load_balancer"
+module "load_balancer" {
+  source                        = "./modules/load_balancer"
 
-  vpc_id               = module.vpc.id
+  vpc_id                        = module.vpc.id
   prod_web_subnets              = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
   prod_web_security_groups      = [module.security_group.prod_web_ec2_security_group_id]
   prod_api_subnets              = [module.subnet.subnet_private_c_id, module.subnet.subnet_private_a_id]
   prod_api_security_groups      = [module.security_group.prod_api_ecs_task_security_group_id]
   prod_web_instance_id = module.ec2.prod_web_ec2_id
+
+  depends_on = [module.certificate_manager]
+}
+
+# ========== Route53 ========== #
+module "route53" {
+  source                          = "./modules/route53"
+  dev_api_ec2_ip                  = [module.ec2.dev_api_ec2_ip]
+  prod_admin_ec2_ip               = [module.ec2.prod_admin_ec2_ip]
+  prod_web_load_balancer_dns_name = module.load_balancer.prod_web_load_balancer_dns_name
+  prod_web_load_balancer_zone_id  = module.load_balancer.prod_web_load_balancer_zone_id
+  prod_api_load_balancer_dns_name = module.load_balancer.prod_api_load_balancer_dns_name
+  prod_api_load_balancer_zone_id  = module.load_balancer.prod_api_load_balancer_zone_id
+
+  depends_on = [module.load_balancer]
 }
 
 # ========== ECR ========== #
@@ -109,12 +118,13 @@ module "ecr" {
   source = "./modules/ecr"
 }
 
-# ========== ECR ========== #
+# ========== ECS ========== #
 module "ecs" {
   source = "./modules/ecs"
 
   security_groups = [module.security_group.prod_api_ecs_task_security_group_id]
   subnets = [module.subnet.subnet_private_a_id, module.subnet.subnet_private_c_id]
-  target_group_arn = module.application_load_balancer.prod_api_target_group_arn
-  depends_on = [module.application_load_balancer, module.ecr]
+  target_group_arn = module.load_balancer.prod_api_target_group_arn
+  
+  depends_on = [module.load_balancer, module.ecr]
 }

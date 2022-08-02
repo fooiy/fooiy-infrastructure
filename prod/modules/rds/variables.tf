@@ -17,3 +17,8 @@ variable "db_subnet_group_name" {
   description = "db_subnet_group_name"
   type        = string
 }
+
+variable allowed_security_groups {
+  type        = list(string)
+  description = "allowed_security_groups"
+}

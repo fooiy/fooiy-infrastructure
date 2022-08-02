@@ -17,3 +17,13 @@ variable "prod_web_load_balancer_zone_id" {
   description = "prod_web_load_balancer_zone_id"
   type        = string
 }
+
+variable "prod_api_load_balancer_dns_name" {
+  description = "prod_api_load_balancer_dns_name"
+  type        = string
+}
+
+variable "prod_api_load_balancer_zone_id" {
+  description = "prod_api_load_balancer_zone_id"
+  type        = string
+}

@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "load_balancer_target_group" {
     interval            = 300
     path                = var.health_check_path
     timeout             = 60
-    matcher             = "200"
+    matcher             = "200-302"
     healthy_threshold   = 5
     unhealthy_threshold = 5
   }

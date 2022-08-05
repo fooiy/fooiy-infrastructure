@@ -53,8 +53,8 @@ resource "aws_instance" "prod_admin_ec2" {
 }
 
 resource "aws_instance" "vpn_ec2" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t2.micro" # Free Tier eligible
+  ami                    = "ami-0437032918df4ad9b" # vpn ec2 id
+  instance_type          = "t2.small" # Free Tier eligible
   key_name               = data.aws_key_pair.vpn_key_pair.key_name
   vpc_security_group_ids = var.vpc_vpn_security_group_ids
   availability_zone      = var.availability_zones.c

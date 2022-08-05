@@ -24,6 +24,7 @@ resource "aws_ecs_task_definition" "api_task_definition" {
     container_port     = 80
     host_port          = 80
     app_name           = "api-fooiy"
+    awslogs_group      = aws_cloudwatch_log_group.prod_api_cloudwatch_log_group.name
   })
   tags = {
     Environment = "prod"
@@ -39,7 +40,7 @@ resource "aws_ecs_service" "api" {
   name            = "api"
   cluster         = aws_ecs_cluster.fooiy-api.id
   task_definition = aws_ecs_task_definition.api_task_definition.arn
-  desired_count   = 3
+  desired_count   = 1
   launch_type     = "FARGATE"
   
  
@@ -63,8 +64,38 @@ resource "aws_ecs_service" "api" {
   }
 }
 
+resource "aws_s3_bucket" "prod_api_log_storage" {
+  bucket = "prod-api-log-storage"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::033677994240:root"
+        },
+        "Action" : "s3:PutObject",
+        "Resource" : "arn:aws:s3:::prod-api-log-storage/*"
+      }
+    ]
+  })
+  
+  lifecycle_rule {
+    id      = "log_lifecycle"
+    prefix  = ""
+    enabled = true
+
+    expiration {
+      days = 10
+    }
+  }
+
+  force_destroy = true
+}
+
+
 resource "aws_cloudwatch_log_group" "prod_api_cloudwatch_log_group" {
-  name = "prod_api_cloudwatch_log_group"
+  name = "api"
 
   tags = {
     Environment = "prod"

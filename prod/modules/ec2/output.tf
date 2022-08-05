@@ -13,3 +13,10 @@ output "prod_web_ec2_id"{
 output "prod_admin_ec2_ip"{
     value = aws_instance.prod_admin_ec2.public_ip
 }
+
+output "vpn_ec2_ip" {
+  value       = aws_instance.vpn_ec2.public_ip
+  sensitive   = true
+  description = "description"
+  depends_on  = []
+}

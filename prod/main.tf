@@ -48,6 +48,9 @@ module "route_table" {
 module "security_group" {
   source = "./modules/security_group"
   vpc_id = module.vpc.id
+
+  # vpn ec2가 있어야지만 가능해서 처음에는 인프라 환경에서는 주석 처리하고 시작해야합니다.
+  vpn_ip = module.ec2.vpn_ec2_ip 
 }
 
 # ========== EC2 ========== #
@@ -71,7 +74,7 @@ module "rds" {
   # dev-rds security group
   vpc_security_group_ids = [module.security_group.dev_api_ec2_security_group_id, module.security_group.vpn_ec2_security_group_id]
   # prod-rds security group
-  allowed_security_groups = [module.security_group.prod_api_ecs_task_security_group_id, module.security_group.prod_admin_ec2_security_group_id]
+  allowed_security_groups = [module.security_group.prod_api_ecs_task_security_group_id, module.security_group.prod_admin_ec2_security_group_id, module.security_group.vpn_ec2_security_group_id]
 
   depends_on             = [module.security_group]
 }
@@ -123,8 +126,9 @@ module "ecs" {
   source = "./modules/ecs"
 
   security_groups = [module.security_group.prod_api_ecs_task_security_group_id]
-  subnets = [module.subnet.subnet_private_a_id, module.subnet.subnet_private_c_id]
+  subnets = [module.subnet.subnet_public_a_id, module.subnet.subnet_public_c_id]
   target_group_arn = module.load_balancer.prod_api_target_group_arn
-  
+  ecr_repository_url = module.ecr.api_fooiy_com_ecr_repository_url
+
   depends_on = [module.load_balancer, module.ecr]
 }

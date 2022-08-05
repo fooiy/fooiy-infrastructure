@@ -224,6 +224,13 @@ resource "aws_security_group" "prod_api_ecs_task_security_group" {
     cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [aws_security_group.prod_api_loadbalancer_security_group.id]
   }
+  ingress {
+    protocol        = "tcp"
+    from_port       = 443
+    to_port         = 443
+    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.prod_api_loadbalancer_security_group.id]
+  }
 
   egress {
     protocol    = "-1"

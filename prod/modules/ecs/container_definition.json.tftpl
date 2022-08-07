@@ -2,38 +2,22 @@
   {
     "name": "${app_name}",
     "image": "${aws_ecr_repository}:${tag}",
-    "essential": true,
+    "cpu": 1024,
+    "memory": 2048,
+    "networkMode": "awsvpc",
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
         "awslogs-region": "${region}",
-        "awslogs-stream-prefix": "/aws/ecs/",
+        "awslogs-stream-prefix": "/aws/ecs",
         "awslogs-group": "${awslogs_group}"
       }
     },
     "portMappings": [
       {
         "containerPort": ${container_port},
-        "hostPort": ${host_port},
-        "protocol": "tcp"
+        "hostPort": ${host_port}
       }
-    ],
-    "cpu": 2,
-    "environment": [
-      {
-        "name": "PORT",
-        "value": "${host_port}"
-      }
-    ],
-    "ulimits": [
-      {
-        "name": "nofile",
-        "softLimit": 65536,
-        "hardLimit": 65536
-      }
-    ],
-    "mountPoints": [],
-    "memory": 1024,
-    "volumesFrom": []
+    ]
   }
 ]

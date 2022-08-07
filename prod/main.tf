@@ -95,9 +95,9 @@ module "load_balancer" {
 
   vpc_id                        = module.vpc.id
   prod_web_subnets              = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
-  prod_web_security_groups      = [module.security_group.prod_web_ec2_security_group_id]
-  prod_api_subnets              = [module.subnet.subnet_private_c_id, module.subnet.subnet_private_a_id]
-  prod_api_security_groups      = [module.security_group.prod_api_ecs_task_security_group_id]
+  prod_web_security_groups      = [module.security_group.prod_web_loadbalancer_security_group_id]
+  prod_api_subnets              = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
+  prod_api_security_groups      = [module.security_group.prod_api_loadbalancer_security_group_id]
   prod_web_instance_id = module.ec2.prod_web_ec2_id
 
   depends_on = [module.certificate_manager]

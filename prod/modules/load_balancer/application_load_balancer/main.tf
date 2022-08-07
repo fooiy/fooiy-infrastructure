@@ -1,4 +1,4 @@
-resource "aws_lb" "application_load_balancer" {
+resource "aws_alb" "application_load_balancer" {
   name               = var.application_load_balancer_name
   internal           = false
   load_balancer_type = "application"
@@ -12,7 +12,7 @@ resource "aws_lb" "application_load_balancer" {
   }
 }
 
-resource "aws_lb_target_group" "load_balancer_target_group" {
+resource "aws_alb_target_group" "load_balancer_target_group" {
   name     = var.load_balancer_target_group_name
   port     = 80
   protocol = "HTTP"
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "load_balancer_target_group" {
     interval            = 300
     path                = var.health_check_path
     timeout             = 60
-    matcher             = "200"
+    matcher             = "200-302"
     healthy_threshold   = 5
     unhealthy_threshold = 5
   }
@@ -34,36 +34,36 @@ resource "aws_lb_target_group" "load_balancer_target_group" {
   }
 }
 
-resource "aws_lb_listener" "load_balancer_listener_http" {
+resource "aws_alb_listener" "load_balancer_listener_http" {
   depends_on        = [data.aws_acm_certificate.fooiy_certification]
-  load_balancer_arn = aws_lb.application_load_balancer.arn
+  load_balancer_arn = aws_alb.application_load_balancer.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.load_balancer_target_group.arn
+    target_group_arn = aws_alb_target_group.load_balancer_target_group.arn
   }
 }
 
-resource "aws_lb_listener_rule" "forward_https" {
-  listener_arn = aws_lb_listener.load_balancer_listener_http.arn
+resource "aws_alb_listener_rule" "forward_https" {
+  listener_arn = aws_alb_listener.load_balancer_listener_http.arn
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.load_balancer_target_group.arn
+    target_group_arn = aws_alb_target_group.load_balancer_target_group.arn
   }
 
   condition {
     host_header {
-      values = [var.aws_lb_listener_rule_host_value]
+      values = [var.aws_alb_listener_rule_host_value]
     }
   }
 }
 
-resource "aws_lb_listener" "load_balancer_listener_https" {
+resource "aws_alb_listener" "load_balancer_listener_https" {
   depends_on        = [data.aws_acm_certificate.fooiy_certification]
-  load_balancer_arn = aws_lb.application_load_balancer.arn
+  load_balancer_arn = aws_alb.application_load_balancer.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -71,12 +71,12 @@ resource "aws_lb_listener" "load_balancer_listener_https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.load_balancer_target_group.arn
+    target_group_arn = aws_alb_target_group.load_balancer_target_group.arn
   }
 }
 
-resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = aws_lb_listener.load_balancer_listener_http.arn
+resource "aws_alb_listener_rule" "redirect_http_to_https" {
+  listener_arn = aws_alb_listener.load_balancer_listener_http.arn
 
   action {
     type = "redirect"
@@ -90,7 +90,7 @@ resource "aws_lb_listener_rule" "redirect_http_to_https" {
 
   condition {
     host_header {
-      values = [var.aws_lb_listener_rule_host_value]
+      values = [var.aws_alb_listener_rule_host_value]
     }
   }
 }

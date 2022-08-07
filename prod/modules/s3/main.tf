@@ -19,7 +19,7 @@ resource "aws_s3_bucket_policy" "dev_s3"{
         "Principal": {
           "AWS": "*"
         },
-        "Action": "s3:GetObject",
+        "Action": ["s3:GetObject","s3:PutObject"],
         "Resource": "arn:aws:s3:::${aws_s3_bucket.dev_fooiy.bucket}/*"
       }
     ]
@@ -48,7 +48,7 @@ resource "aws_s3_bucket_policy" "prod_s3"{
         "Principal": {
           "AWS": "*"
         },
-        "Action": "s3:GetObject",
+        "Action": ["s3:GetObject","s3:PutObject"],
         "Resource": "arn:aws:s3:::${aws_s3_bucket.prod_fooiy.bucket}/*"
       }
     ]

@@ -45,6 +45,32 @@ resource "aws_security_group" "dev_api_ec2_security_group" {
   }
 }
 
+# prod api ecs loadbalancer 
+resource "aws_security_group" "prod_web_loadbalancer_security_group" {
+  vpc_id = var.vpc_id
+  name   = "prod_web_loadbalancer_security_group"
+  ingress {
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # prod web ec2
 resource "aws_security_group" "prod_web_ec2_security_group" {
   name        = "prod_web_ec2_security_group"
@@ -63,21 +89,7 @@ resource "aws_security_group" "prod_web_ec2_security_group" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "Allow all inbound traffic"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "Allow all inbound traffic"
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.prod_web_loadbalancer_security_group.id] 
   }
 
   egress {
@@ -221,14 +233,6 @@ resource "aws_security_group" "prod_api_ecs_task_security_group" {
     protocol        = "tcp"
     from_port       = 80
     to_port         = 80
-    cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [aws_security_group.prod_api_loadbalancer_security_group.id]
-  }
-  ingress {
-    protocol        = "tcp"
-    from_port       = 443
-    to_port         = 443
-    cidr_blocks     = ["0.0.0.0/0"]
     security_groups = [aws_security_group.prod_api_loadbalancer_security_group.id]
   }
 

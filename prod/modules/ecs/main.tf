@@ -10,11 +10,11 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role" {
 
 # 작업 정의
 resource "aws_ecs_task_definition" "api_task_definition" {
-  family                   = "api_task_definition"
+  family                   = "api-fooiy"
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 2048
   requires_compatibilities = ["FARGATE"]
   container_definitions    = templatefile("modules/ecs/container_definition.json.tftpl", 
     {
@@ -30,6 +30,8 @@ resource "aws_ecs_task_definition" "api_task_definition" {
     Environment = "prod"
     Application = "api.fooiy.com"
   }
+
+  depends_on = [aws_cloudwatch_log_group.prod_api_cloudwatch_log_group]
 }
 
 resource "aws_ecs_cluster" "fooiy-api" {
@@ -45,7 +47,7 @@ resource "aws_ecs_service" "api" {
   
  
   network_configuration {
-    security_groups  = var.security_groups
+    security_groups  = var.security_groups 
     subnets          = var.subnets
     assign_public_ip = true
   }
@@ -95,7 +97,7 @@ resource "aws_s3_bucket" "prod_api_log_storage" {
 
 
 resource "aws_cloudwatch_log_group" "prod_api_cloudwatch_log_group" {
-  name = "api"
+  name = "/aws/ecs/api"
 
   tags = {
     Environment = "prod"

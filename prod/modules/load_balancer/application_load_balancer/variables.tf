@@ -10,10 +10,10 @@ variable load_balancer_target_group_name {
   description = "load_balancer_target_group_name"
 }
 
-variable aws_lb_listener_rule_host_value {
+variable aws_alb_listener_rule_host_value {
   type        = string
   default     = ""
-  description = "aws_lb_listener_rule_host_value"
+  description = "aws_alb_listener_rule_host_value"
 }
 
 variable "security_groups" {

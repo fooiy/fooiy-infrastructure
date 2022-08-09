@@ -59,10 +59,45 @@ resource "aws_db_parameter_group" "prod_rds_parameter_group" {
   name        = "aurora-db-57-parameter-group"
   family      = "aurora-mysql5.7"
   description = "aurora-db-57-parameter-group"
+
 }
 
 resource "aws_rds_cluster_parameter_group" "prod_rds_parameter_group" {
   name        = "aurora-57-cluster-parameter-group"
   family      = "aurora-mysql5.7"
   description = "aurora-57-cluster-parameter-group"
+
+  # 한글 및 이모지 지원 character set
+  parameter {
+    name = "character_set_client"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "character_set_connection"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "character_set_database"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "character_set_filesystem"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "character_set_results"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "character_set_server"
+    value = "utf8mb4"
+  }
+  parameter {
+    name = "collation_connection"
+    value = "utf8mb4_unicode_ci"
+  }
+  parameter {
+    name = "collation_server"
+    value = "utf8mb4_unicode_ci"
+  }
 }

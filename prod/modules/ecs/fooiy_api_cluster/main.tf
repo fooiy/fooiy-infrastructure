@@ -20,16 +20,15 @@ module "ecs_api_service" {
   ecr_repository_url          = var.ecr_repository_url
 }
 
-# module "ecs_redis_commander_service" {
-#   source = "./ecs_redis_commander_service"
+module "ecs_redis_commander_service" {
+  source = "./ecs_redis_commander_service"
 
-#   cluster_id                  = aws_ecs_cluster.fooiy-api.id
-#   security_groups             = var.redis_commander_security_groups
-#   subnets                     = var.subnets
-#   target_group_arn            = var.target_group_arn
-#   ecs_task_execution_role_arn = var.ecs_task_execution_role_arn
-#   ecr_repository_url          = var.ecr_repository_url
-# }
+  cluster_id                  = aws_ecs_cluster.fooiy-api.id
+  security_groups             = var.redis_commander_security_groups
+  subnets                     = var.subnets
+  target_group_arn            = var.redis_commander_target_group_arn
+  ecs_task_execution_role_arn = var.ecs_task_execution_role_arn
+}
 
 module "ecs_reids_service" {
   source = "./ecs_redis_service"

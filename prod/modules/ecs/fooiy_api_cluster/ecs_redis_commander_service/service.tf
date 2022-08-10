@@ -1,7 +1,7 @@
-resource "aws_ecs_service" "api" {
-  name            = "api"
+resource "aws_ecs_service" "redis_commander" {
+  name            = "redis_commander"
   cluster         = var.cluster_id
-  task_definition = aws_ecs_task_definition.api_task_definition.arn
+  task_definition = aws_ecs_task_definition.redis_commander_task_definition.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -22,4 +22,3 @@ resource "aws_ecs_service" "api" {
     Application = "api.fooiy.com"
   }
 }
-

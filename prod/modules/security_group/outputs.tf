@@ -17,13 +17,17 @@ output "vpn_ec2_security_group_id" {
 output "prod_api_ecs_task_security_group_id" {
   value = aws_security_group.prod_api_ecs_task_security_group.id
 }
-output "prod_api_loadbalancer_security_group_id" {
-  value = aws_security_group.prod_api_loadbalancer_security_group.id
+output "prod_api_load_balancer_security_group_id" {
+  value = aws_security_group.prod_api_load_balancer_security_group.id
+}
+output "prod_redis_commander_ecs_task_security_group_id" {
+  value = aws_security_group.prod_redis_commander_ecs_task_security_group.id
 }
 output "prod_api_redis_ecs_task_security_group_id" {
   value = aws_security_group.prod_api_redis_ecs_task_security_group.id
 }
 
-output "prod_web_loadbalancer_security_group_id" {
-  value = aws_security_group.prod_web_loadbalancer_security_group.id
+output "prod_web_load_balancer_security_group_id" {
+  value = aws_security_group.prod_web_load_balancer_security_group.id
 }
+

@@ -6,7 +6,7 @@ resource "aws_ecs_task_definition" "redis_commander_task_definition" {
   cpu                      = 1024
   memory                   = 2048
   requires_compatibilities = ["FARGATE"]
-  container_definitions = templatefile("modules/ecs/container_definition.json.tftpl",
+  container_definitions = templatefile("modules/ecs/container_definition_environment.json.tftpl",
     {
       region             = "ap-northeast-2"
       aws_ecr_repository = "rediscommander/redis-commander"
@@ -17,6 +17,7 @@ resource "aws_ecs_task_definition" "redis_commander_task_definition" {
       awslogs_group      = aws_cloudwatch_log_group.prod_redis_commander_cloudwatch_log_group.name
       cpu                = 1024
       memory             = 2048
+      redis_hosts        = "local:fooiy-api-redis.fooiy:6379"
   })
   tags = {
     Environment = "prod"

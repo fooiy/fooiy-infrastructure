@@ -3,9 +3,3 @@ variable "vpc_id" {
   type        = string
 }
 
-variable vpn_ip {
-  type        = string
-  default     = "0.0.0.0/0"
-  description = "vpn_ip"
-}
-

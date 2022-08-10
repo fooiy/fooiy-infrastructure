@@ -95,9 +95,9 @@ module "load_balancer" {
 
   vpc_id                   = module.vpc.id
   prod_web_subnets         = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
-  prod_web_security_groups = [module.security_group.prod_web_loadbalancer_security_group_id]
+  prod_web_security_groups = [module.security_group.prod_web_load_balancer_security_group_id]
   prod_api_subnets         = [module.subnet.subnet_public_c_id, module.subnet.subnet_public_a_id]
-  prod_api_security_groups = [module.security_group.prod_api_loadbalancer_security_group_id]
+  prod_api_security_groups = [module.security_group.prod_api_load_balancer_security_group_id]
   prod_web_instance_id     = module.ec2.prod_web_ec2_id
 
   depends_on = [module.certificate_manager]
@@ -125,12 +125,14 @@ module "ecr" {
 module "ecs" {
   source = "./modules/ecs"
 
-  vpc_id                          = module.vpc.id
-  fooiy_api_api_security_groups   = [module.security_group.prod_api_ecs_task_security_group_id]
-  fooiy_api_redis_security_groups = [module.security_group.prod_api_redis_ecs_task_security_group_id]
-  fooiy_api_subnets               = [module.subnet.subnet_public_a_id, module.subnet.subnet_public_c_id]
-  fooiy_api_target_group_arn      = module.load_balancer.prod_api_target_group_arn
-  fooiy_api_ecr_repository_url    = module.ecr.api_fooiy_com_ecr_repository_url
+  vpc_id                                     = module.vpc.id
+  fooiy_api_api_security_groups              = [module.security_group.prod_api_ecs_task_security_group_id]
+  fooiy_api_redis_security_groups            = [module.security_group.prod_api_redis_ecs_task_security_group_id]
+  fooiy_api_redis_commander_security_groups  = [module.security_group.prod_redis_commander_ecs_task_security_group_id]
+  fooiy_api_subnets                          = [module.subnet.subnet_public_a_id, module.subnet.subnet_public_c_id]
+  fooiy_api_prod_api_target_group_arn        = module.load_balancer.prod_api_target_group_arn
+  fooiy_api_redis_commander_target_group_arn = module.load_balancer.redis_commander_target_group_arn
+  fooiy_api_ecr_repository_url               = module.ecr.api_fooiy_com_ecr_repository_url
 
   depends_on = [module.load_balancer, module.ecr]
 }

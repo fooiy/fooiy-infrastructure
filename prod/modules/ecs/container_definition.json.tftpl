@@ -2,8 +2,8 @@
   {
     "name": "${app_name}",
     "image": "${aws_ecr_repository}:${tag}",
-    "cpu": 1024,
-    "memory": 2048,
+    "cpu": ${cpu},
+    "memory": ${memory},
     "networkMode": "awsvpc",
     "logConfiguration": {
       "logDriver": "awslogs",

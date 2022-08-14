@@ -48,9 +48,6 @@ module "route_table" {
 module "security_group" {
   source = "./modules/security_group"
   vpc_id = module.vpc.id
-
-  # vpn ec2가 있어야지만 가능해서 처음에는 인프라 환경에서는 주석 처리하고 시작해야합니다.
-  vpn_ip = module.ec2.vpn_ec2_ip
 }
 
 # ========== EC2 ========== #

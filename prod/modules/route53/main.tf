@@ -19,9 +19,9 @@ resource "aws_route53_record" "admin" {
   records = var.prod_admin_ec2_ip
 }
 
-resource "aws_route53_record" "www" {
+resource "aws_route53_record" "root" {
   zone_id = data.aws_route53_zone.route53.zone_id
-  name    = "www.fooiy.com"
+  name    = "fooiy.com"
   type    = "A"
 
   alias {

@@ -31,6 +31,18 @@ resource "aws_route53_record" "root" {
   }
 }
 
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.route53.zone_id
+  name    = "www.fooiy.com"
+  type    = "A"
+
+  alias {
+    name                   = var.prod_web_load_balancer_dns_name
+    zone_id                = var.prod_web_load_balancer_zone_id
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_route53_record" "api" {
   zone_id = data.aws_route53_zone.route53.zone_id
   name    = "api.fooiy.com"

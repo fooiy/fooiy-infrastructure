@@ -9,19 +9,12 @@ resource "aws_security_group" "dev_api_ec2_security_group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", "13.124.207.221/32"]
   }
   ingress {
     description = "Allow all inbound traffic"
     from_port   = 80
     to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "Allow all inbound traffic"
-    from_port   = 443
-    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -43,4 +36,6 @@ resource "aws_security_group" "dev_api_ec2_security_group" {
   tags = {
     Name = "dev_api_ec2_security_group"
   }
+
+  depends_on = [data.aws_instance.vpn_ec2]
 }

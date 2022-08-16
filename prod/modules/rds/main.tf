@@ -1,23 +1,23 @@
 resource "aws_db_instance" "dev_rds" {
-  allocated_storage    = 10
-  engine               = "mysql"
-  engine_version       = "8.0.28"
-  instance_class       = "db.t3.micro"
-  db_name              = "dev_rds"
-  identifier           = "dev-rds"
-  username             = "admin"
-  password             = "mh76y4rL52UryqdE3kBa"
-  parameter_group_name = "default.mysql8.0"
-  skip_final_snapshot  = true
+  allocated_storage      = 10
+  engine                 = "mysql"
+  engine_version         = "8.0.28"
+  instance_class         = "db.t3.micro"
+  db_name                = "dev_rds"
+  identifier             = "dev-rds"
+  username               = "admin"
+  password               = "mh76y4rL52UryqdE3kBa"
+  parameter_group_name   = "default.mysql8.0"
+  skip_final_snapshot    = true
   vpc_security_group_ids = var.vpc_security_group_ids
-  db_subnet_group_name = var.db_subnet_group_name
+  db_subnet_group_name   = var.db_subnet_group_name
 
   deletion_protection = true
 }
 
 
 module "prod_rds" {
-  source  = "terraform-aws-modules/rds-aurora/aws"
+  source = "terraform-aws-modules/rds-aurora/aws"
 
   name           = "prod-rds"
   engine         = "aurora-mysql"
@@ -55,6 +55,12 @@ module "prod_rds" {
   }
 }
 
+resource "aws_rds_cluster_endpoint" "prod_rds_endpoint" {
+  cluster_identifier          = module.prod_rds.cluster_id
+  cluster_endpoint_identifier = "fooiy-rds"
+  custom_endpoint_type        = "ANY"
+}
+
 resource "aws_db_parameter_group" "prod_rds_parameter_group" {
   name        = "aurora-db-57-parameter-group"
   family      = "aurora-mysql5.7"
@@ -69,35 +75,35 @@ resource "aws_rds_cluster_parameter_group" "prod_rds_parameter_group" {
 
   # 한글 및 이모지 지원 character set
   parameter {
-    name = "character_set_client"
+    name  = "character_set_client"
     value = "utf8mb4"
   }
   parameter {
-    name = "character_set_connection"
+    name  = "character_set_connection"
     value = "utf8mb4"
   }
   parameter {
-    name = "character_set_database"
+    name  = "character_set_database"
     value = "utf8mb4"
   }
   parameter {
-    name = "character_set_filesystem"
+    name  = "character_set_filesystem"
     value = "utf8mb4"
   }
   parameter {
-    name = "character_set_results"
+    name  = "character_set_results"
     value = "utf8mb4"
   }
   parameter {
-    name = "character_set_server"
+    name  = "character_set_server"
     value = "utf8mb4"
   }
   parameter {
-    name = "collation_connection"
+    name  = "collation_connection"
     value = "utf8mb4_unicode_ci"
   }
   parameter {
-    name = "collation_server"
+    name  = "collation_server"
     value = "utf8mb4_unicode_ci"
   }
 }

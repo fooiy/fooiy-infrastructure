@@ -39,7 +39,7 @@ resource "aws_security_group" "prod_web_ec2_security_group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32"]
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", var.office_ip]
   }
   ingress {
     description     = "Allow all inbound traffic"

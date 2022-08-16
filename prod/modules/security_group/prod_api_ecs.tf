@@ -20,7 +20,7 @@ resource "aws_security_group" "prod_api_load_balancer_security_group" {
     protocol    = "tcp"
     from_port   = 8081
     to_port     = 8081
-    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32"] # vpn ip 
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", var.office_ip] # vpn ip 
   }
 
   egress {

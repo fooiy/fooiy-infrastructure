@@ -9,21 +9,21 @@ resource "aws_security_group" "prod_admin_ec2_security_group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", "13.124.207.221/32"]
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", "13.124.207.221/32", var.office_ip]
   }
   ingress {
     description = "Allow all inbound traffic"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32"]
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", var.office_ip]
   }
   ingress {
     description = "Allow all inbound traffic"
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32"]
+    cidr_blocks = ["${data.aws_instance.vpn_ec2.public_ip}/32", var.office_ip]
   }
 
   egress {

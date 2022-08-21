@@ -134,4 +134,7 @@ module "ecs" {
   depends_on = [module.load_balancer, module.ecr]
 }
 
-
+# ========== SES ========== #
+module "ses" {
+  source = "./modules/ses"
+}

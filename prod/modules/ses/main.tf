@@ -30,7 +30,7 @@ resource "aws_route53_record" "fooiy_amazonses_verification_record" {
 
 resource "aws_ses_domain_mail_from" "fooiy" {
   domain           = aws_ses_domain_identity.fooiy.domain
-  mail_from_domain = "bounce.${aws_ses_domain_identity.fooiy.domain}"
+  mail_from_domain = "no-reply.${aws_ses_domain_identity.fooiy.domain}"
 }
 
 resource "aws_route53_record" "fooiy_ses_domain_mail_from_mx" {

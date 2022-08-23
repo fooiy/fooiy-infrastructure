@@ -1,8 +1,8 @@
 # 인증서 등록 및 라우터53 연결
 resource "aws_acm_certificate" "certification" {
-  domain_name       = var.domain_name
-  validation_method = "DNS"
-
+  domain_name               = var.domain_name
+  validation_method         = "DNS"
+  subject_alternative_names = [var.root_domain_name]
   lifecycle {
     create_before_destroy = true
   }

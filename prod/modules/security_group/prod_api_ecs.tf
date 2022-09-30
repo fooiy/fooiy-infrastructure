@@ -116,3 +116,29 @@ resource "aws_security_group" "prod_api_redis_ecs_task_security_group" {
     Name = "prod_api_redis_security_group"
   }
 }
+
+
+resource "aws_security_group" "prod_api_worker_ecs_task_security_group" {
+  name        = "prod_api_worker_security_group"
+  description = "Allow all inbound traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description     = "Allow all inbound traffic"
+    from_port       = 6379
+    to_port         = 6379
+    protocol        = "tcp"
+    security_groups = [aws_security_group.prod_api_redis_ecs_task_security_group.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "prod_api_worker_security_group"
+  }
+}

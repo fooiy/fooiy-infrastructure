@@ -126,6 +126,7 @@ module "ecs" {
   fooiy_api_api_security_groups              = [module.security_group.prod_api_ecs_task_security_group_id]
   fooiy_api_redis_security_groups            = [module.security_group.prod_api_redis_ecs_task_security_group_id]
   fooiy_api_redis_commander_security_groups  = [module.security_group.prod_redis_commander_ecs_task_security_group_id]
+  fooiy_api_worker_security_groups           = [module.security_group.prod_api_worker_ecs_task_security_group_id]
   fooiy_api_subnets                          = [module.subnet.subnet_public_a_id, module.subnet.subnet_public_c_id]
   fooiy_api_prod_api_target_group_arn        = module.load_balancer.prod_api_target_group_arn
   fooiy_api_redis_commander_target_group_arn = module.load_balancer.redis_commander_target_group_arn

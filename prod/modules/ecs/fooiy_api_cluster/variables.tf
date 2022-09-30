@@ -16,6 +16,10 @@ variable "redis_commander_security_groups" {
   type        = list(string)
   description = "security_groups"
 }
+variable "worker_security_groups" {
+  type        = list(string)
+  description = "security_groups"
+}
 
 
 variable "subnets" {

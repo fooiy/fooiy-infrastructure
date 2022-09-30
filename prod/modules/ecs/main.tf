@@ -15,6 +15,7 @@ module "fooiy_api_cluster" {
   api_security_groups              = var.fooiy_api_api_security_groups
   redis_security_groups            = var.fooiy_api_redis_security_groups
   redis_commander_security_groups  = var.fooiy_api_redis_commander_security_groups
+  worker_security_groups           = var.fooiy_api_worker_security_groups
   subnets                          = var.fooiy_api_subnets
   api_target_group_arn             = var.fooiy_api_prod_api_target_group_arn
   redis_commander_target_group_arn = var.fooiy_api_redis_commander_target_group_arn

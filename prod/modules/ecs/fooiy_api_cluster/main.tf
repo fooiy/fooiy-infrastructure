@@ -44,3 +44,13 @@ module "ecs_reids_service" {
     aws_service_discovery_private_dns_namespace.ecs_service_discovery_zone
   ]
 }
+
+module "ecs_worker_service" {
+  source = "./ecs_worker_service"
+
+  cluster_id                  = aws_ecs_cluster.fooiy-api.id
+  security_groups             = var.worker_security_groups
+  subnets                     = var.subnets
+  ecs_task_execution_role_arn = var.ecs_task_execution_role_arn
+  ecr_repository_url          = var.ecr_repository_url
+}

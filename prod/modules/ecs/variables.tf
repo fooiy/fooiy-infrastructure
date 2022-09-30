@@ -16,6 +16,10 @@ variable "fooiy_api_redis_commander_security_groups" {
   type        = list(string)
   description = "security_groups"
 }
+variable "fooiy_api_worker_security_groups" {
+  type        = list(string)
+  description = "security_groups"
+}
 
 variable "fooiy_api_subnets" {
   type        = list(string)

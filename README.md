@@ -1,6 +1,6 @@
 # fooiy-infrastructure
 
-네이민 : 싹다 스네이크
+네이민 : 스네이크
 
 환경
 

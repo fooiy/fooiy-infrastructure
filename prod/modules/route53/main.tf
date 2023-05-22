@@ -59,6 +59,6 @@ resource "aws_route53_record" "email" {
   zone_id = data.aws_route53_zone.route53.zone_id
   name    = "email.fooiy.com"
   type    = "MX"
-  ttl     = "172800"
+  ttl     = "300"
   records = ["10 ASPMX.daum.net.", "20 ALT.ASPMX.daum.net."]
 }

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "${app_name}",
+    "image": "${aws_ecr_repository}:${tag}",
+    "command": ["${command}"],
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "/aws/ecs",
+        "awslogs-group": "${awslogs_group}"
+      }
+    },
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port}
+      }
+    ]
+  }
+]
